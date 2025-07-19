@@ -1,0 +1,5 @@
+/target
+rust_wasm_bug_bg.wasm
+rust_wasm_bug_bg.wasm.d.ts
+rust_wasm_bug.js
+rust_wasm_bug.d.ts

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Rust WASM alloc bug</title>
+</head>
+
+<body>
+    <p>Open the console to see the output.</p>
+    <script type="module">
+        import init from './rust_wasm_bug.js';
+
+        async function run() {
+            await init();
+        }
+
+        run();
+    </script>
+</body>
+
+</html>

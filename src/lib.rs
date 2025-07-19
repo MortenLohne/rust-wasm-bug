@@ -1,0 +1,40 @@
+use std::mem;
+
+use wasm_bindgen::prelude::*;
+use web_sys::console;
+
+#[wasm_bindgen(start)]
+pub fn main() -> Result<(), JsValue> {
+    let cursed_vec = get_cursed_vec();
+    console::log_1(
+        &format!(
+            "Attempting to drop cursed vector at {:p}",
+            cursed_vec.as_ptr()
+        )
+        .into(),
+    );
+    mem::drop(cursed_vec);
+    console::log_1(&JsValue::from_str("Dropped cursed vector"));
+    Ok(())
+}
+
+fn get_cursed_vec() -> Vec<u8> {
+    type E = u8;
+    type InnerVec = Vec<E>;
+    const OUTER_SIZE: usize = 2usize.pow(27); // Reserve a 1.5 GiB outer vector, to OOM faster
+    const INNER_SIZE: usize = 1024;
+
+    let mut test_vector: Vec<InnerVec> = vec![];
+    test_vector.reserve_exact(OUTER_SIZE);
+
+    // Allocate 1KiB vectors until we run out of memory
+    for i in 0.. {
+        let mut inner_vector = vec![];
+        if inner_vector.try_reserve_exact(INNER_SIZE).is_err() {
+            // Remove the final inner vector. It is cursed, and cannot be dropped.
+            return mem::take(&mut test_vector[i - 1]);
+        };
+        test_vector.push(inner_vector);
+    }
+    unreachable!();
+}
