@@ -1,0 +1,1 @@
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && source "$HOME/.cargo/env" && rustup target add wasm32-unknown-unknown && cargo install wasm-bindgen-cli && cargo build --release --target=wasm32-unknown-unknown && wasm-bindgen target/wasm32-unknown-unknown/release/rust_wasm_bug.wasm --out-dir . --target web
