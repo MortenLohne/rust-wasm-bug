@@ -23,13 +23,12 @@ fn get_cursed_vec() -> Vec<u8> {
     let mut test_vector: Vec<Vec<u8>> = Vec::with_capacity(2usize.pow(27));
 
     // Allocate 1KiB vectors until we run out of memory
-    for i in 0.. {
+    loop {
         let mut inner_vector = vec![];
         if inner_vector.try_reserve_exact(1024).is_err() {
             // Remove the final inner vector. It is cursed, and cannot be dropped.
-            return mem::take(&mut test_vector[i - 1]);
+            return mem::take(test_vector.last_mut().unwrap());
         };
         test_vector.push(inner_vector);
     }
-    unreachable!();
 }
