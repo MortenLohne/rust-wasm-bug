@@ -19,18 +19,13 @@ pub fn main() -> Result<(), JsValue> {
 }
 
 fn get_cursed_vec() -> Vec<u8> {
-    type E = u8;
-    type InnerVec = Vec<E>;
-    const OUTER_SIZE: usize = 2usize.pow(27); // Reserve a 1.5 GiB outer vector, to OOM faster
-    const INNER_SIZE: usize = 1024;
-
-    let mut test_vector: Vec<InnerVec> = vec![];
-    test_vector.reserve_exact(OUTER_SIZE);
+    // Reserve a 1.5 GiB outer vector, to OOM faster
+    let mut test_vector: Vec<Vec<u8>> = Vec::with_capacity(2usize.pow(27));
 
     // Allocate 1KiB vectors until we run out of memory
     for i in 0.. {
         let mut inner_vector = vec![];
-        if inner_vector.try_reserve_exact(INNER_SIZE).is_err() {
+        if inner_vector.try_reserve_exact(1024).is_err() {
             // Remove the final inner vector. It is cursed, and cannot be dropped.
             return mem::take(&mut test_vector[i - 1]);
         };
